@@ -1,10 +1,9 @@
 namespace JSGCode.Base
 {
-    using System;
-
-    public interface IManager : IDisposable
+    public interface IManager 
     {
         public bool IsInit { get; }
         public void Init();
+        public void Release();
     }
 }
