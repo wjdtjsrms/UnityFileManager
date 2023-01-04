@@ -27,7 +27,7 @@ namespace JSGCode.Util
             try
             {
                 this.data = data;
-                JsonFileStreamer<T>.WriteFile(StringValues.MessageDataFolderPath + savedFilePath, data);
+                JsonFileStreamer<T>.WriteFile(savedFilePath, data);
             }
             catch (Exception ex)
             {
@@ -50,7 +50,7 @@ namespace JSGCode.Util
         public virtual T ReadFileData()
         {
             if (data == null)
-                data = JsonFileStreamer<T>.ReadFile(StringValues.MessageDataFolderPath + savedFilePath);
+                data = JsonFileStreamer<T>.ReadFile(savedFilePath);
 
             return data;
         }

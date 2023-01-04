@@ -28,8 +28,8 @@ namespace JSGCode.Model
         public void AddMessage(string sender, string message)
         {
             var newMessage = new MessageModel(sender, message);
-            modelList.Add(newMessage);
 
+            modelList.Add(newMessage);
             modelSubject.NotifyObservers(this);
         }
         #endregion
