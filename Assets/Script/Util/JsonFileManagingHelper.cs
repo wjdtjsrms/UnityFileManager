@@ -1,68 +1,41 @@
 namespace JSGCode.Util
 {
-    using System;
-    using System.IO;
-    using UnityEngine;
+    using JSGCode.Base;
+    using JSGCode.Model;
 
-    public class JsonFileManagingHelper<T> where T : new()
+    public class JsonFileManagingHelper<T, U> : JsonFileManagingHelperBase<T>, IDataObserver<ContainerModel<U>>
+        where T : ContainerModel<U>, new() where U : class, new()
     {
-        #region Methods
-        protected string savedFilePath;
-        protected T data;
-        #endregion
-
-        #region Constructor
-        public JsonFileManagingHelper(string path)
+        #region Constrructor
+        public JsonFileManagingHelper(string path) : base(path)
         {
             savedFilePath = path;
         }
 
-        ~JsonFileManagingHelper() { Reset(); }
+        public JsonFileManagingHelper(string path, T data) : this(path)
+        {
+            this.data = data;
+        }
         #endregion
 
-        #region Method : Public
-        public virtual void WriteFileData(T data)
+        #region Overriding
+        public override void Reset()
         {
-            try
-            {
-                this.data = data;
-                JsonFileStreamer<T>.WriteFile(savedFilePath, data);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("Write file error with exception: " + ex.Message);
-            }
+            data.ModelSubject.RemoveObserver(this);
+            base.Reset();
         }
 
-        public virtual void ClearFileData()
+        public override void WriteFileData(T data)
         {
-            try
-            {
-                JsonFileStreamer<T>.ClearFile(savedFilePath);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError("Clear file error with exception: " + ex.Message);
-            }
+            data.SetSerializable();
+            base.WriteFileData(data);
         }
+        #endregion
 
-        public virtual T ReadFileData()
+        #region Method : Observer
+        public void Notify(ContainerModel<U> data)
         {
-            if (data == null)
-                data = JsonFileStreamer<T>.ReadFile(savedFilePath);
-
-            return data;
-        }
-
-        public virtual void DeleteFile()
-        {
-            File.Delete(savedFilePath);
-        }
-
-        public virtual void Reset()
-        {
-            data = default;
-            savedFilePath = null;
+            WriteFileData((T)data);
         }
         #endregion
     }

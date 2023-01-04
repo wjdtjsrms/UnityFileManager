@@ -7,7 +7,7 @@ namespace JSGCode.File
     using System.Collections.Generic;
     using UnityEngine;
 
-    public class MessageFileManagingHelper : JsonFileManagingHelper<MessageContainerModel>,IDataObserver<MessageContainerModel>
+    public class MessageFileManagingHelper : JsonFileManagingHelperBase<MessageContainerModel>,IDataObserver<MessageContainerModel>
     {
         #region Consturctor
         public MessageFileManagingHelper(string path) : base(path)

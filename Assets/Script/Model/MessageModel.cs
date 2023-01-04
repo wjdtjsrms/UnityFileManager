@@ -4,7 +4,7 @@ namespace JSGCode.Model
     public class MessageModel
     {
         #region Mmmbers : data
-        public string id;
+        public string sender;
         public string message;
         public string date;
         #endregion
@@ -12,9 +12,9 @@ namespace JSGCode.Model
         #region Constructor
         public MessageModel() { }
 
-        public MessageModel(string id, string message)
+        public MessageModel(string sender, string message)
         {
-            this.id = id;
+            this.sender = sender;
             this.message = message;
             date = System.DateTime.Now.ToString();
         }

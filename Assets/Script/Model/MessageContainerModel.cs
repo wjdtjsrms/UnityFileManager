@@ -25,9 +25,9 @@ namespace JSGCode.Model
         #endregion
 
         #region Method
-        public void AddMessage(string id, string message)
+        public void AddMessage(string sender, string message)
         {
-            var newMessage = new MessageModel(id, message);
+            var newMessage = new MessageModel(sender, message);
             modelList.Add(newMessage);
 
             modelSubject.NotifyObservers(this);

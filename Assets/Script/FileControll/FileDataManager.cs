@@ -17,11 +17,11 @@ namespace JSGCode.File
         #endregion
 
         #region Member
-        protected Dictionary<string, JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>> messageFilesDic = new Dictionary<string, JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>>();
+        protected Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> messageFilesDic = new Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>>();
         #endregion
 
         #region Property
-        public IEnumerable<JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>> MessageList => messageFilesDic.Values;
+        public IEnumerable<JsonFileManagingHelper<MessageContainerModel, MessageModel>> MessageList => messageFilesDic.Values;
         #endregion
 
         #region Method : Implements
@@ -31,53 +31,56 @@ namespace JSGCode.File
             BetterStreamingAssets.Initialize();
             messageFilesDic = GetMessageDic();
 
-            var messageHelper = GetMessageHelper(StringValues.TestID) ?? CreateMessageFileContainer(StringValues.TestTargetID);
+            var messageHelper = GetMessageHelper(StringValues.TestTargetID) ?? CreateMessageFileContainer(StringValues.TestID, StringValues.TestTargetID);
             messageHelper.ReadFileData().AddMessage(StringValues.TestID, "Test");
+            messageHelper.ReadFileData().AddMessage(StringValues.TestTargetID, "TestTarget");
         }
         #endregion
 
         #region Method : Get File Data
-        private Dictionary<string, JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>> GetMessageDic()
+        private Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> GetMessageDic() => GetFile<MessageContainerModel, MessageModel>();
+
+
+
+        private Dictionary<string, JsonFileManagingHelper<T, U>> GetFile<T,U>() where T : ContainerModel<U>, new() where U : class, new()
         {
-            var messageDic = new Dictionary<string, JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>>();
+            var messageDic = new Dictionary<string, JsonFileManagingHelper<T, U>>();
 
             foreach ((string name, string path) file in GetFileNameAndPathInAccountFolder(StringValues.MessageDataFolderPath))
             {
-                JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel> newMessageHelper = new JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>(file.path);
+                JsonFileManagingHelper<T, U> newMessageHelper = new JsonFileManagingHelper<T, U>(file.path);
                 var data = newMessageHelper.ReadFileData();
                 data.GetPrevData();
-                data.ModelSubject.AddObserver((IDataObserver<ContainerModel<MessageModel>>)newMessageHelper);
+                data.ModelSubject.AddObserver(newMessageHelper);
 
                 messageDic.Add(file.name, newMessageHelper);
             }
             return messageDic;
         }
-
-        public JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel> CreateMessageFileContainer(string targetUserId)
-        {
-            if (messageFilesDic.ContainsKey(targetUserId))
-                return null;
-
-            MessageContainerModel newContainer = new MessageContainerModel(StringValues.TestID, targetUserId);
-            string fileName = string.Format("{0}/{1}.{2}", StringValues.TestID, targetUserId, "json");
-            JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel> helper = new JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel>(fileName, newContainer);
-            messageFilesDic.Add(targetUserId, helper);
-
-            newContainer.ModelSubject.AddObserver((IDataObserver<ContainerModel<MessageModel>>)helper);
-
-            return helper;
-        }
-
-
         #endregion
 
-        #region Method : Get File ManagingHelper
-        public JsonFileManagingHelperWithObserver<MessageContainerModel, MessageModel> GetMessageHelper(string key)
+        #region Method : Get or Create Message Helper
+        public JsonFileManagingHelper<MessageContainerModel, MessageModel> GetMessageHelper(string key)
         {
             if (messageFilesDic.ContainsKey(key))
                 return messageFilesDic[key];
 
             return null;
+        }
+
+        public JsonFileManagingHelper<MessageContainerModel, MessageModel> CreateMessageFileContainer(string folderName, string fileName)
+        {
+            if (messageFilesDic.ContainsKey(fileName))
+                return null;
+
+            MessageContainerModel newContainer = new MessageContainerModel(StringValues.TestID, fileName);
+            string pathName = string.Format("{0}/{1}.{2}", folderName, fileName, "json");
+            JsonFileManagingHelper<MessageContainerModel, MessageModel> helper = new JsonFileManagingHelper<MessageContainerModel, MessageModel>(pathName, newContainer);
+            messageFilesDic.Add(fileName, helper);
+
+            newContainer.ModelSubject.AddObserver(helper);
+
+            return helper;
         }
         #endregion
 

@@ -9,7 +9,7 @@ namespace JSGCode.Util
         public static T ReadFile(string path)
         {
             if (File.Exists(path))
-                return JsonUtility.FromJson<T>(BetterStreamingAssets.ReadAllText(path));
+                return JsonUtility.FromJson<T>(File.ReadAllText(path));
 
             return default(T);
         }
