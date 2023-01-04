@@ -57,7 +57,8 @@ namespace JSGCode.Util
 
         public virtual void DeleteFile()
         {
-            File.Delete(savedFilePath);
+            if (File.Exists(savedFilePath))
+                File.Delete(savedFilePath);
         }
 
         public virtual void Reset()

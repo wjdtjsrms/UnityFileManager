@@ -9,16 +9,6 @@ namespace JSGCode.File
 
     public class FileDataManager : ManagerBase<FileDataManager>
     {
-        #region Method : Test
-        public void Awake()
-        {
-            Init();
-        }
-
-        public string GetCurrentUserID() => StringValues.TestID;
-        public string GetCurrentTargetID() => StringValues.TestTargetID;
-        #endregion
-
         #region Member
         protected Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> messageFilesDic = new Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>>();
         #endregion
@@ -33,11 +23,6 @@ namespace JSGCode.File
             base.Init();
             BetterStreamingAssets.Initialize();
             messageFilesDic = GetMessageDic();
-
-            var messageHelper = GetMessageHelper(GetCurrentTargetID());
-
-            messageHelper?.ReadFileData().AddMessage(GetCurrentUserID(), "Test");
-            messageHelper?.ReadFileData().AddMessage(GetCurrentTargetID(), "TestTarget");
         }
 
         public override void Release()
@@ -48,13 +33,13 @@ namespace JSGCode.File
         #endregion
 
         #region Method : Get File Data
-        private Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> GetMessageDic() => GetFile<MessageContainerModel, MessageModel>(StringValues.MessageDataFolderPath);
+        private Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> GetMessageDic() => GetFile<MessageContainerModel, MessageModel>(StringValues.MessageDataFolderPath, StringValues.TestID);
 
-        private Dictionary<string, JsonFileManagingHelper<T, U>> GetFile<T, U>(string folderPath) where T : ContainerModel<U>, new() where U : class, new()
+        private Dictionary<string, JsonFileManagingHelper<T, U>> GetFile<T, U>(string folderPath, string currentUserID) where T : ContainerModel<U>, new() where U : class, new()
         {
             var messageDic = new Dictionary<string, JsonFileManagingHelper<T, U>>();
 
-            foreach ((string name, string path) file in GetFileNameAndPathInAccountFolder(folderPath, GetCurrentUserID()))
+            foreach ((string name, string path) file in GetFileNameAndPathInAccountFolder(folderPath, currentUserID))
             {
                 JsonFileManagingHelper<T, U> newMessageHelper = new JsonFileManagingHelper<T, U>(folderPath + file.path);
 
@@ -74,17 +59,17 @@ namespace JSGCode.File
             if (messageFilesDic.ContainsKey(targetUserName))
                 return messageFilesDic[targetUserName];
 
-            return CreateMessageFileContainer(targetUserName);
+            return CreateMessageFileContainer(StringValues.TestID, targetUserName);
         }
 
-        private JsonFileManagingHelper<MessageContainerModel, MessageModel> CreateMessageFileContainer(string targetUserName)
+        private JsonFileManagingHelper<MessageContainerModel, MessageModel> CreateMessageFileContainer(string currentUserID, string targetUserName)
         {
             if (messageFilesDic.ContainsKey(targetUserName))
                 return null;
 
-            string pathName = StringValues.MessageDataFolderPath + $"{GetCurrentUserID()}/{targetUserName}.json";
+            string pathName = StringValues.MessageDataFolderPath + $"{currentUserID}/{targetUserName}.json";
 
-            MessageContainerModel newContainer = new MessageContainerModel(GetCurrentUserID(), targetUserName);
+            MessageContainerModel newContainer = new MessageContainerModel(currentUserID, targetUserName);
             JsonFileManagingHelper<MessageContainerModel, MessageModel> helper = new JsonFileManagingHelper<MessageContainerModel, MessageModel>(pathName, newContainer);
 
             newContainer.ModelSubject.AddObserver(helper);

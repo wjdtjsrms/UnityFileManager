@@ -32,6 +32,11 @@ namespace JSGCode.Model
             modelList.Add(newMessage);
             modelSubject.NotifyObservers(this);
         }
+
+        public void AddMessage(MessageModel messageModel)
+        {
+            AddMessage(messageModel.sender, messageModel.message);
+        }
         #endregion
     }
 }

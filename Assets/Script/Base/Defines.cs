@@ -6,7 +6,7 @@ namespace JSGCode.Base
     {
         public static readonly string MessageDataFolderPath = Application.persistentDataPath + "/Messages/";
 
-        public static readonly string TestID = "wjdtjsrms";
-        public static readonly string TestTargetID = "dyddnr";
+        public static readonly string TestID = "TestID";
+        public static readonly string TestTargetID = "TestTargetID";
     }
 }
