@@ -39,6 +39,12 @@ namespace JSGCode.File
             messageHelper?.ReadFileData().AddMessage(GetCurrentUserID(), "Test");
             messageHelper?.ReadFileData().AddMessage(GetCurrentTargetID(), "TestTarget");
         }
+
+        public override void Release()
+        {
+            base.Release();
+            messageFilesDic = null;
+        }
         #endregion
 
         #region Method : Get File Data
