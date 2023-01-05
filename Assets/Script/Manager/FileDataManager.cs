@@ -22,7 +22,8 @@ namespace JSGCode.File
         {
             base.Init();
             BetterStreamingAssets.Initialize();
-            messageFilesDic = GetMessageDic();
+
+            messageFilesDic = GetMessageDic(StringValues.TestID);
         }
 
         public override void Release()
@@ -33,7 +34,7 @@ namespace JSGCode.File
         #endregion
 
         #region Method : Get File Data
-        private Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> GetMessageDic() => GetFile<MessageContainerModel, MessageModel>(StringValues.MessageDataFolderPath, StringValues.TestID);
+        private Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> GetMessageDic(string currentUserID) => GetFile<MessageContainerModel, MessageModel>(StringValues.MessageDataFolderPath, currentUserID);
 
         private Dictionary<string, JsonFileManagingHelper<T, U>> GetFile<T, U>(string folderPath, string currentUserID) where T : ContainerModel<U>, new() where U : class, new()
         {

@@ -25,7 +25,7 @@ namespace JSGCode.Test
             FileDataManager fileManager = FileDataManager.Instance;
 
             // Act
-            fileManager.Init();
+            fileManager.Init(StringValues.TestID);
 
             // Assert
             Assert.IsNotNull(fileManager);
@@ -37,18 +37,19 @@ namespace JSGCode.Test
 
         #region Method : Test Message
         [UnityTest]
-        public IEnumerator FileManagerMessageCreate()
+        public IEnumerator FileManagerMessageTest()
         {
             // Arrange
             var messageHelper = FileDataManager.Instance.GetMessageHelper(StringValues.TestTargetID);
 
-            // Act
+            // Write Message
             messageHelper?.ReadFileData().AddMessage(testMessageModel1);
             messageHelper?.ReadFileData().AddMessage(testMessageModel2);
 
-            // Assert
+            // Read Message
             var readData = messageHelper?.ReadFileData().Models.ToArray();
 
+            // Assert
             Assert.IsNotNull(messageHelper);
 
             Assert.IsTrue(testMessageModel1.sender.Equals(readData[0].sender));
@@ -58,6 +59,15 @@ namespace JSGCode.Test
             Assert.IsTrue(testMessageModel2.message.Equals(readData[1].message));
 
             messageHelper.DeleteFile();
+            yield return null;
+        }
+        #endregion
+
+        #region Method : Test Message
+        [UnityTest]
+        public IEnumerator FileManagerCallHistoryTest()
+        {
+
             yield return null;
         }
         #endregion
