@@ -11,10 +11,12 @@ namespace JSGCode.File
     {
         #region Member
         protected Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> messageFilesDic = new Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>>();
+        protected Dictionary<string, JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel>> callHistoryFilesDic = new Dictionary<string, JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel>>();
         #endregion
 
         #region Property
         public IEnumerable<JsonFileManagingHelper<MessageContainerModel, MessageModel>> MessageList => messageFilesDic.Values;
+        public IEnumerable<JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel>> CallHistoryList => callHistoryFilesDic.Values;
         #endregion
 
         #region Method : Implements
@@ -24,6 +26,7 @@ namespace JSGCode.File
             BetterStreamingAssets.Initialize();
 
             messageFilesDic = GetMessageDic(StringValues.TestID);
+            callHistoryFilesDic = GetCallHistoryDic(StringValues.TestID);
         }
 
         public override void Release()
@@ -35,6 +38,8 @@ namespace JSGCode.File
 
         #region Method : Get File Data
         private Dictionary<string, JsonFileManagingHelper<MessageContainerModel, MessageModel>> GetMessageDic(string currentUserID) => GetFile<MessageContainerModel, MessageModel>(StringValues.MessageDataFolderPath, currentUserID);
+        private Dictionary<string, JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel>> GetCallHistoryDic(string currentUserID) => GetFile<CallHistoryContainerModel, CallHistoryModel>(StringValues.CallHistoryDataFolderPath, currentUserID);
+
 
         private Dictionary<string, JsonFileManagingHelper<T, U>> GetFile<T, U>(string folderPath, string currentUserID) where T : ContainerModel<U>, new() where U : class, new()
         {
@@ -80,6 +85,34 @@ namespace JSGCode.File
             return helper;
         }
         #endregion
+
+        #region Method : Get or Create Message Helper
+        public JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel> GetCallHistoryHelper(string callDate)
+        {
+            if(callHistoryFilesDic.ContainsKey(callDate))
+                return callHistoryFilesDic[callDate];
+
+            return CreateCallHistorFileContainer(StringValues.TestID, callDate);
+        }
+
+        private JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel> CreateCallHistorFileContainer(string currentUserID, string callDate)
+        {
+            if (callHistoryFilesDic.ContainsKey(callDate))
+                return null;
+
+            string pathName = StringValues.CallHistoryDataFolderPath + $"{currentUserID}/{callDate}.json";
+
+            CallHistoryContainerModel newContainer = new CallHistoryContainerModel(callDate);
+            JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel> helper = new JsonFileManagingHelper<CallHistoryContainerModel, CallHistoryModel>(pathName, newContainer);
+
+            newContainer.ModelSubject.AddObserver(helper);
+
+            callHistoryFilesDic.Add(callDate, helper);
+
+            return helper;
+        }
+        #endregion
+
 
         #region Method : File
         private string[] GetFiles(string folderName)

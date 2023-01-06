@@ -15,6 +15,9 @@ namespace JSGCode.Test
         #region Test Object
         private readonly MessageModel testMessageModel1 = new MessageModel(StringValues.TestID, "Test_Message adfjlka;jdf;~!!#~$%~$@~$#`");
         private readonly MessageModel testMessageModel2 = new MessageModel(StringValues.TestTargetID, "Test_Messa\age2 adfjlka;jdf;~!!#~$\n%~afaf\n$@~$#`");
+
+        private readonly CallHistoryModel testCallHistoryModel1 = new CallHistoryModel(StringValues.TestTargetID, CallResult.Rejected.ToString());
+        private readonly CallHistoryModel testCallHistoryModel2 = new CallHistoryModel(StringValues.TestTargetID, CallResult.Receive.ToString());
         #endregion
 
         #region Method : Initialize
@@ -25,7 +28,7 @@ namespace JSGCode.Test
             FileDataManager fileManager = FileDataManager.Instance;
 
             // Act
-            fileManager.Init(StringValues.TestID);
+            fileManager.Init();
 
             // Assert
             Assert.IsNotNull(fileManager);
@@ -43,8 +46,8 @@ namespace JSGCode.Test
             var messageHelper = FileDataManager.Instance.GetMessageHelper(StringValues.TestTargetID);
 
             // Write Message
-            messageHelper?.ReadFileData().AddMessage(testMessageModel1);
-            messageHelper?.ReadFileData().AddMessage(testMessageModel2);
+            messageHelper?.ReadFileData().AddModel(testMessageModel1);
+            messageHelper?.ReadFileData().AddModel(testMessageModel2);
 
             // Read Message
             var readData = messageHelper?.ReadFileData().Models.ToArray();
@@ -58,7 +61,7 @@ namespace JSGCode.Test
             Assert.IsTrue(testMessageModel2.sender.Equals(readData[1].sender));
             Assert.IsTrue(testMessageModel2.message.Equals(readData[1].message));
 
-            messageHelper.DeleteFile();
+            // messageHelper.DeleteFile();
             yield return null;
         }
         #endregion
@@ -67,7 +70,26 @@ namespace JSGCode.Test
         [UnityTest]
         public IEnumerator FileManagerCallHistoryTest()
         {
+            // Arrange
+            var callHistoryHelper = FileDataManager.Instance.GetCallHistoryHelper(StringValues.TestDate);
 
+            // Write Message
+            callHistoryHelper?.ReadFileData().AddModel(testCallHistoryModel1);
+            callHistoryHelper?.ReadFileData().AddModel(testCallHistoryModel2);
+
+            // Read Message
+            var readData = callHistoryHelper?.ReadFileData().Models.ToArray();
+
+            // Assert
+            Assert.IsNotNull(callHistoryHelper);
+
+            Assert.IsTrue(testCallHistoryModel1.targetUserID.Equals(readData[0].targetUserID));
+            Assert.IsTrue(testCallHistoryModel1.callResult.Equals(readData[0].callResult));
+
+            Assert.IsTrue(testCallHistoryModel2.targetUserID.Equals(readData[1].targetUserID));
+            Assert.IsTrue(testCallHistoryModel2.callResult.Equals(readData[1].callResult));
+
+            // callHistoryHelper.DeleteFile();
             yield return null;
         }
         #endregion
