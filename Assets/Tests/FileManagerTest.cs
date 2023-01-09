@@ -25,14 +25,14 @@ namespace JSGCode.Test
         public IEnumerator FileManagerCreate()
         {
             // Arrange
-            FileDataManager fileManager = FileDataManager.Instance;
+            TestFileDataManager fileManager = TestFileDataManager.Instance;
 
             // Act
             fileManager.Init();
 
             // Assert
             Assert.IsNotNull(fileManager);
-            Assert.IsTrue(FileDataManager.Instance.IsInit);
+            Assert.IsTrue(TestFileDataManager.Instance.IsInit);
 
             yield return null;
         }
@@ -43,7 +43,7 @@ namespace JSGCode.Test
         public IEnumerator FileManagerMessageTest()
         {
             // Arrange
-            var messageHelper = FileDataManager.Instance.GetMessageHelper(StringValues.TestTargetID);
+            var messageHelper = TestFileDataManager.Instance.GetMessageHelper(StringValues.TestTargetID);
 
             // Write Message
             messageHelper?.ReadFileData().AddModel(testMessageModel1);
@@ -61,17 +61,17 @@ namespace JSGCode.Test
             Assert.IsTrue(testMessageModel2.sender.Equals(readData[1].sender));
             Assert.IsTrue(testMessageModel2.message.Equals(readData[1].message));
 
-            // messageHelper.DeleteFile();
+            messageHelper.DeleteFile();
             yield return null;
         }
         #endregion
 
-        #region Method : Test Message
+        #region Method : Test CallHistory
         [UnityTest]
         public IEnumerator FileManagerCallHistoryTest()
         {
             // Arrange
-            var callHistoryHelper = FileDataManager.Instance.GetCallHistoryHelper(StringValues.TestDate);
+            var callHistoryHelper = TestFileDataManager.Instance.GetCallHistoryHelper(StringValues.TestDate);
 
             // Write Message
             callHistoryHelper?.ReadFileData().AddModel(testCallHistoryModel1);
@@ -89,7 +89,7 @@ namespace JSGCode.Test
             Assert.IsTrue(testCallHistoryModel2.targetUserID.Equals(readData[1].targetUserID));
             Assert.IsTrue(testCallHistoryModel2.callResult.Equals(readData[1].callResult));
 
-            // callHistoryHelper.DeleteFile();
+            callHistoryHelper.DeleteFile();
             yield return null;
         }
         #endregion

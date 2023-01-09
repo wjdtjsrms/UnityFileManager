@@ -1,12 +1,19 @@
 namespace JSGCode.Base
 {
-    using JSGCode.File;
     using UnityEngine;
 
-    public class ManagerBase<T> : SingletonMonoBehaviour<FileDataManager>, IManager where T : MonoBehaviour
+    public class ManagerBase<T> : SingletonMonoBehaviour<T>, IManager where T : MonoBehaviour
     {
         #region Consturctor
         protected ManagerBase() { }
+        #endregion
+
+        #region Method : Mono
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Release();
+        }
         #endregion
 
         #region IManager
