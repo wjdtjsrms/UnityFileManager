@@ -1,0 +1,3 @@
+[submodule "Assets/Module/UnityUtil"]
+	path = Assets/Module/UnityUtil
+	url = https://github.com/wjdtjsrms/UnityUtil.git
