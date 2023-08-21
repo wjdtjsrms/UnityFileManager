@@ -1,0 +1,16 @@
+{
+    "name": "FileDataModule",
+    "rootNamespace": "",
+    "references": [
+        "GUID:5d30555557c114342b9e9c645b7dd3fa"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
