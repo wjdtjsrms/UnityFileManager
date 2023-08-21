@@ -5,7 +5,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "73d86259ce31ce7f4dfe1d028ea1c3edf96c23e4"
+      "hash": "d210e3d76adc0cce77f4ad2af1ade88dad6b1d5a"
     },
     "com.unity.addressables": {
       "version": "1.19.19",
@@ -68,7 +68,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.16",
+      "version": "2.0.20",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -123,7 +123,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.31",
+      "version": "1.1.33",
       "depth": 0,
       "source": "registry",
       "dependencies": {
